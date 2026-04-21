@@ -947,6 +947,70 @@
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.04), 0 0 0 3px rgba(34,197,94,0.12);
     }
 
+    /* ── Mode Select ── */
+    .mode-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .mode-card {
+      width: 100%;
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mode-card:hover { border-color: var(--green); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .mode-card--michelin { border-color: #e9d5ff; background: linear-gradient(135deg, #fdf4ff 0%, #ede9fe 100%); }
+    .mode-card--michelin:hover { border-color: #7c3aed; box-shadow: 0 4px 24px rgba(124,58,237,0.12); }
+    .mode-card__emoji { font-size: 40px; margin-bottom: 4px; line-height: 1; }
+    .mode-card__title { font-size: 20px; font-weight: 800; color: var(--text); }
+    .mode-card--michelin .mode-card__title { color: #7c3aed; }
+    .mode-card__desc { font-size: 14px; color: var(--text-sub); line-height: 1.6; }
+    .mode-card__tag {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+    .mode-card--michelin .mode-card__tag { background: #ede9fe; color: #7c3aed; }
+
+    /* ── Michelin badge on recipe card ── */
+    .michelin-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      color: white;
+      flex-shrink: 0;
+    }
+
+    /* ── Michelin modal extras ── */
+    .modal__chef-note {
+      background: linear-gradient(135deg, #fdf4ff, #ede9fe);
+      border: 1px solid #e9d5ff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .modal__chef-note-icon { font-size: 20px; flex-shrink: 0; }
+    .modal__chef-note-text { font-size: 13px; color: #6d28d9; line-height: 1.6; }
+
     /* ── D-day Badge ── */
     .dday-badge {
       font-size: 12px;
@@ -1154,12 +1218,17 @@
     <div class="step__line" id="line-2"></div>
     <div class="step">
       <div class="step__dot" id="dot-3">3</div>
-      <div class="step__label" id="lbl-3">레시피</div>
+      <div class="step__label" id="lbl-3">선택</div>
     </div>
     <div class="step__line" id="line-3"></div>
     <div class="step">
       <div class="step__dot" id="dot-4">4</div>
-      <div class="step__label" id="lbl-4">냉장고</div>
+      <div class="step__label" id="lbl-4">레시피</div>
+    </div>
+    <div class="step__line" id="line-4"></div>
+    <div class="step">
+      <div class="step__dot" id="dot-5">5</div>
+      <div class="step__label" id="lbl-5">냉장고</div>
     </div>
   </div>
 
@@ -1240,9 +1309,34 @@
     </div>
   </div>
 
-  <!-- ── Screen 3: Recipes ── -->
+  <!-- ── Screen 3: Mode Select ── -->
   <div class="screen" id="screen-3">
-    <h2 class="screen__title">추천 레시피</h2>
+    <h2 class="screen__title">레시피 모드 선택</h2>
+    <p class="screen__desc">오늘은 어떤 요리를 해볼까요?</p>
+
+    <div class="mode-grid">
+      <button class="mode-card" id="mode-normal-btn">
+        <div class="mode-card__emoji">🍳</div>
+        <div class="mode-card__title">일반 레시피</div>
+        <div class="mode-card__desc">누구나 쉽게 따라할 수 있는<br>간단하고 맛있는 레시피</div>
+        <div class="mode-card__tag">⏱ 빠르고 간편</div>
+      </button>
+      <button class="mode-card mode-card--michelin" id="mode-michelin-btn">
+        <div class="mode-card__emoji">⭐</div>
+        <div class="mode-card__title">미슐랭 레시피</div>
+        <div class="mode-card__desc">셰프의 비법이 담긴<br>고급 레스토랑 수준의 레시피</div>
+        <div class="mode-card__tag">👨‍🍳 요리 고수용</div>
+      </button>
+    </div>
+
+    <button class="cta-btn cta-btn--outline" id="back-to-2-from-3-btn" style="margin-top:16px">
+      재료 다시 선택
+    </button>
+  </div>
+
+  <!-- ── Screen 4: Recipes ── -->
+  <div class="screen" id="screen-4">
+    <h2 class="screen__title" id="recipe-screen-title">추천 레시피</h2>
     <p class="screen__desc" id="recipe-desc">보유 재료로 만들 수 있는 레시피예요.</p>
 
     <div class="recipe-grid" id="recipe-grid"></div>
@@ -1252,13 +1346,13 @@
         🧊 냉장고에 저장하기
       </button>
       <button class="cta-btn cta-btn--outline" id="back-to-2-btn">
-        재료 다시 선택
+        모드 선택으로
       </button>
     </div>
   </div>
 
-  <!-- ── Screen 4: Fridge ── -->
-  <div class="screen" id="screen-4">
+  <!-- ── Screen 5: Fridge ── -->
+  <div class="screen" id="screen-5">
     <h2 class="screen__title">냉장고에 저장</h2>
     <p class="screen__desc">구매일과 유통기한을 확인하고 수정한 뒤 저장하세요.</p>
 
@@ -1903,9 +1997,10 @@ function goTo(step) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`screen-${step}`).classList.add('active');
 
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const dot = document.getElementById(`dot-${i}`);
     const lbl = document.getElementById(`lbl-${i}`);
+    if (!dot) continue;
     dot.classList.remove('active','done');
     lbl.classList.remove('active');
     if (i < step) { dot.classList.add('done'); dot.textContent = '✓'; }
@@ -1913,7 +2008,7 @@ function goTo(step) {
     else { dot.textContent = i; }
     if (i === step) lbl.classList.add('active');
   }
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     const line = document.getElementById(`line-${i}`);
     if (line) line.classList.toggle('done', i < step);
   }
@@ -2068,20 +2163,282 @@ function addManual() {
   manualInput.value = '';
 }
 
-document.getElementById('find-recipe-btn').addEventListener('click', () => {
-  findRecipes();
-  goTo(3);
-});
+document.getElementById('find-recipe-btn').addEventListener('click', () => goTo(3));
 document.getElementById('back-to-1-btn').addEventListener('click', () => goTo(1));
+document.getElementById('back-to-2-from-3-btn').addEventListener('click', () => goTo(2));
+
+let currentMode = 'normal'; // 'normal' | 'michelin'
+
+document.getElementById('mode-normal-btn').addEventListener('click', () => {
+  currentMode = 'normal';
+  document.getElementById('recipe-screen-title').textContent = '추천 레시피';
+  findRecipes('normal');
+  goTo(4);
+});
+document.getElementById('mode-michelin-btn').addEventListener('click', () => {
+  currentMode = 'michelin';
+  document.getElementById('recipe-screen-title').textContent = '⭐ 미슐랭 레시피';
+  findRecipes('michelin');
+  goTo(4);
+});
 
 // ═══════════════════════════════════════════════
-// 7. Screen 3 — 레시피
+// 7. Screen 4 — 레시피
 // ═══════════════════════════════════════════════
-function findRecipes() {
+
+// ── 미슐랭 레시피 DB ──
+const MICHELIN_RECIPES = [
+  {
+    id:1001, name:'트러플 리조또', emoji:'🍚', time:'45분', difficulty:'고급', servings:'2인분', category:'이탈리안',
+    mainIngredients:['쌀','양파','버터'],
+    allIngredients:['쌀','양파','버터','화이트와인','파르메산치즈','트러플오일','육수','마늘'],
+    amounts:{'쌀':'200g (아보리오 쌀 권장)','버터':'40g (무염)','화이트와인':'80ml','파르메산치즈':'50g (갓 갈아서)','트러플오일':'1작은술'},
+    steps:[
+      '육수를 <strong>약불</strong>로 따뜻하게 유지해 두세요. 식은 육수를 넣으면 쌀이 고르게 익지 않아요.',
+      '두꺼운 팬에 버터 20g을 녹이고 <strong>중불</strong>에서 양파와 마늘을 5분간 볶아 완전히 투명하게 만드세요.',
+      '쌀을 넣고 <strong>중강불</strong>로 올려 1~2분 볶아 쌀알이 반투명해질 때까지 볶으세요.',
+      '화이트와인을 붓고 모두 흡수될 때까지 저어주세요. 알코올 향이 날아가야 해요.',
+      '따뜻한 육수를 한 국자씩 추가하며 <strong>중불</strong>에서 계속 저어주세요. 한 국자가 완전히 흡수되면 다음 국자를 추가해요. 이 과정을 18~20분 반복해요.',
+      '불을 끄고 남은 버터 20g과 파르메산치즈를 넣어 힘차게 저어 크리미하게 만드세요.',
+      '접시에 담고 트러플오일을 가볍게 두르고 파르메산을 추가로 갈아 얹어 바로 서빙하세요.',
+    ],
+    tip:'리조또는 만들자마자 바로 먹어야 해요. 기다리면 수분을 흡수해 딱딱해집니다.',
+    chefNote:'만테카투라(마지막 버터·치즈 단계)가 리조또의 핵심이에요. 불을 완전히 끄고 격렬하게 저어야 에멀전화가 일어나 실키한 질감이 만들어집니다.',
+    plating:'깊은 접시를 미리 데워두고 리조또를 중앙에 올린 뒤 살짝 흔들어 자연스럽게 퍼지게 하세요.'
+  },
+  {
+    id:1002, name:'콩피 오리다리', emoji:'🍗', time:'4시간', difficulty:'고급', servings:'2인분', category:'프렌치',
+    mainIngredients:['오리다리','마늘','타임'],
+    allIngredients:['오리다리','마늘','타임','로즈마리','소금','후추','오리지방'],
+    amounts:{'오리다리':'2개','마늘':'6쪽','타임':'4줄기','소금':'15g'},
+    steps:[
+      '오리다리에 소금, 마늘, 타임을 문질러 <strong>냉장고에서 12시간</strong> 절여두세요.',
+      '소금을 씻어내고 키친타월로 완전히 물기를 제거하세요.',
+      '오리지방을 70°C로 가열하고 오리다리를 완전히 잠기게 넣으세요.',
+      '<strong>80~85°C를 유지하며 3시간</strong> 저온 조리하세요. 온도가 높아지면 고기가 질겨져요.',
+      '건져내어 키친타월로 닦고 <strong>강불</strong> 팬에서 껍질 면을 3분간 바삭하게 구워주세요.',
+    ],
+    tip:'남은 오리지방은 냉장 보관 후 감자 볶을 때 사용하면 풍미가 폭발해요.',
+    chefNote:'콩피의 핵심은 저온 유지예요. 온도계를 반드시 사용하세요.',
+    plating:'껍질이 위로 가도록 올리고 구운 감자와 허브 샐러드를 곁들이세요.'
+  },
+  {
+    id:1003, name:'비프 웰링턴', emoji:'🥩', time:'90분', difficulty:'고급', servings:'4인분', category:'영국식',
+    mainIngredients:['소고기','버섯','파이지'],
+    allIngredients:['소고기','버섯','파이지','머스터드','햄','달걀','소금','후추','버터'],
+    amounts:{'소고기':'600g (안심)','버섯':'300g (양송이)','파이지':'1장','머스터드':'2큰술'},
+    steps:[
+      '소고기 안심에 소금·후추를 충분히 뿌리고 <strong>강불</strong> 팬에서 겉면만 1분씩 시어링하세요.',
+      '머스터드를 고기 전체에 얇게 바르고 10분 식히세요.',
+      '버섯을 다져 <strong>중불</strong>에서 수분이 완전히 날아갈 때까지 볶아 믹스처(덕셀)를 만드세요.',
+      '랩을 깔고 햄 → 덕셀 → 소고기 순으로 올려 단단히 말아 냉장고에서 30분 굳히세요.',
+      '파이지로 감싸고 달걀물을 바른 뒤 <strong>200°C 오븐에서 25분</strong> 구우세요.',
+      '10분 레스팅 후 두껍게 슬라이스하세요.',
+    ],
+    tip:'소고기 내부 온도 52~54°C가 미디엄 레어 기준이에요.',
+    chefNote:'시어링 후 반드시 식혀야 파이지가 눅눅해지지 않아요.',
+    plating:'단면이 보이도록 비스듬히 세워 담고 레드와인 소스를 둘러주세요.'
+  },
+  {
+    id:1004, name:'레몬 버터 가리비 구이', emoji:'🐚', time:'20분', difficulty:'중급', servings:'2인분', category:'해산물',
+    mainIngredients:['가리비','버터','레몬'],
+    allIngredients:['가리비','버터','레몬','마늘','파슬리','소금','후추','올리브오일'],
+    amounts:{'가리비':'6개 (패관 포함)','버터':'30g','레몬':'1개'},
+    steps:[
+      '가리비를 키친타월로 완전히 물기를 제거하세요. 수분이 있으면 구워지지 않고 쪄져요.',
+      '팬을 <strong>강불</strong>로 달궈 연기가 날 때까지 가열하세요.',
+      '올리브오일을 두르고 가리비를 올려 <strong>건드리지 말고</strong> 90초간 구워 황금빛 크러스트를 만드세요.',
+      '뒤집고 버터와 마늘을 넣어 <strong>버터를 숟가락으로 계속 끼얹으며</strong> 60초 더 구우세요.',
+      '레몬즙을 뿌리고 파슬리를 흩뿌려 바로 서빙하세요.',
+    ],
+    tip:'가리비는 절대 오래 익히면 안 돼요. 겉은 골든, 속은 반투명하게 유지하세요.',
+    chefNote:'뜨거운 팬에서 빠른 시어링이 핵심이에요. 팬이 충분히 달궈지지 않으면 가리비가 팬에 달라붙어요.',
+    plating:'패관 위에 올리거나 케이퍼·레몬슬라이스와 함께 플레이팅하세요.'
+  },
+  {
+    id:1005, name:'미소 된장 블랙대구', emoji:'🐟', time:'48시간+20분', difficulty:'고급', servings:'2인분', category:'일식퓨전',
+    mainIngredients:['대구','된장','미림'],
+    allIngredients:['대구','된장','미림','청주','설탕','생강'],
+    amounts:{'대구':'2토막 (180g씩)','된장':'4큰술','미림':'3큰술','설탕':'2큰술'},
+    steps:[
+      '된장, 미림, 청주, 설탕을 섞어 마리네이드를 만드세요.',
+      '대구에 마리네이드를 두껍게 바르고 <strong>냉장고에서 48시간</strong> 재워두세요.',
+      '생선 표면의 된장을 부드럽게 닦아내세요. 남기면 탈 수 있어요.',
+      '<strong>200°C 오븐에서 12분</strong> 또는 그릴에서 각 면 4분씩 구우세요.',
+    ],
+    tip:'노부 레스토랑의 시그니처 메뉴예요. 마리네이드 시간이 길수록 풍미가 깊어져요.',
+    chefNote:'된장의 당분이 캐러멜화되어 특유의 윤기와 단맛이 생겨요.',
+    plating:'생강 피클과 삶은 청경채를 곁들이면 레스토랑 느낌이 나요.'
+  },
+  {
+    id:1006, name:'부야베스 (프로방스 해산물 스튜)', emoji:'🦐', time:'1시간 30분', difficulty:'고급', servings:'4인분', category:'프렌치',
+    mainIngredients:['새우','조개','토마토'],
+    allIngredients:['새우','조개','홍합','토마토','양파','마늘','사프란','화이트와인','올리브오일','바게트'],
+    amounts:{'새우':'200g','조개':'200g','홍합':'200g','사프란':'한 꼬집'},
+    steps:[
+      '사프란을 따뜻한 물 50ml에 10분 불려두세요.',
+      '올리브오일에 양파, 마늘, 토마토를 <strong>중불</strong>에서 15분 볶아 베이스를 만드세요.',
+      '화이트와인을 붓고 2분 끓인 뒤 육수와 사프란물을 넣어 20분 끓이세요.',
+      '단단한 해산물(조개)부터 넣고 3분, 새우·홍합을 넣고 3분 더 끓이세요.',
+      '바게트에 루이(마요네즈 소스)를 발라 곁들이세요.',
+    ],
+    tip:'해산물은 마지막에 넣어야 질겨지지 않아요.',
+    chefNote:'사프란이 부야베스의 핵심 향이에요. 절대 생략하지 마세요.',
+    plating:'깊은 볼에 해산물을 먼저 담고 육수를 테이블에서 직접 부어 드라마틱하게 서빙하세요.'
+  },
+  {
+    id:1007, name:'크렘 브륄레', emoji:'🍮', time:'3시간', difficulty:'중급', servings:'4인분', category:'디저트',
+    mainIngredients:['달걀','생크림','설탕'],
+    allIngredients:['달걀','생크림','설탕','바닐라빈','소금'],
+    amounts:{'달걀':'4개 (노른자만)','생크림':'500ml','설탕':'80g + 토핑용 4큰술'},
+    steps:[
+      '생크림에 바닐라빈을 긁어 넣고 <strong>약불</strong>에서 80°C까지 가열하세요.',
+      '달걀 노른자와 설탕을 흰색이 될 때까지 휘핑하세요.',
+      '뜨거운 크림을 노른자에 조금씩 부으며 섞어 커스터드를 만드세요.',
+      '체에 걸러 그릇에 붓고 <strong>150°C 오븐에서 중탕으로 40분</strong> 구우세요.',
+      '완전히 식힌 뒤 냉장고에서 2시간 굳히세요.',
+      '설탕을 위에 뿌리고 토치로 캐러멜화하세요.',
+    ],
+    tip:'커스터드 표면이 살짝 흔들리는 정도가 완성이에요. 완전히 굳으면 과하게 익은 거예요.',
+    chefNote:'토치는 한 곳에 오래 대지 말고 빠르게 움직이세요. 설탕이 고르게 캐러멜화돼요.',
+    plating:'서빙 직전에 캐러멜화하세요. 미리 하면 눅눅해져요.'
+  },
+  {
+    id:1008, name:'닭가슴살 수비드 샐러드', emoji:'🥗', time:'2시간', difficulty:'중급', servings:'2인분', category:'샐러드',
+    mainIngredients:['닭고기','양상추','레몬'],
+    allIngredients:['닭고기','양상추','토마토','오이','레몬','올리브오일','디종머스터드','꿀','소금','후추'],
+    amounts:{'닭고기':'2쪽 (닭가슴살)','올리브오일':'3큰술','디종머스터드':'1큰술'},
+    steps:[
+      '닭가슴살에 소금·후추·올리브오일을 발라 지퍼백에 넣고 공기를 빼세요.',
+      '<strong>63°C 온수에서 1시간 30분</strong> 수비드하세요. 냄비에 온도계를 꽂고 유지해도 돼요.',
+      '꺼내어 팬에서 <strong>강불</strong>로 30초씩 겉면만 빠르게 시어링하세요.',
+      '5분 레스팅 후 얇게 슬라이스하세요.',
+      '레몬즙, 올리브오일, 머스터드, 꿀로 드레싱을 만들어 채소와 버무리세요.',
+    ],
+    tip:'수비드 닭가슴살은 촉촉함이 일반 조리와 완전히 달라요.',
+    chefNote:'63°C는 살모넬라가 사멸하는 온도예요. 이보다 낮으면 위험하니 온도계를 꼭 사용하세요.',
+    plating:'닭을 비스듬히 올리고 드레싱을 살짝 뿌린 후 레몬 웨지를 곁들이세요.'
+  },
+  {
+    id:1009, name:'홈메이드 파스타 카르보나라', emoji:'🍝', time:'40분', difficulty:'중급', servings:'2인분', category:'이탈리안',
+    mainIngredients:['달걀','베이컨','파르메산치즈'],
+    allIngredients:['달걀','베이컨','파르메산치즈','스파게티','마늘','흑후추','소금'],
+    amounts:{'달걀':'2개 + 노른자 2개','베이컨':'150g (판체타 권장)','파르메산치즈':'60g','스파게티':'200g'},
+    steps:[
+      '달걀 2개 + 노른자 2개에 파르메산치즈를 갈아 넣고 흑후추를 넉넉히 섞어두세요.',
+      '베이컨을 <strong>중불</strong>에서 바삭하게 볶고 기름만 조금 남긴 채 팬에서 건져두세요.',
+      '파스타를 소금물에 알덴테로 삶으세요. 면수 한 컵을 꼭 보관하세요.',
+      '<strong>불을 완전히 끄고</strong> 팬에 면수 3큰술을 넣어 온도를 낮춘 뒤 파스타를 넣으세요.',
+      '달걀 혼합물을 빠르게 섞으면서 면수를 조금씩 추가해 크리미한 소스를 만드세요.',
+      '베이컨을 다시 넣고 흑후추를 갈아 마무리하세요.',
+    ],
+    tip:'크림을 절대 넣지 마세요. 진짜 카르보나라는 달걀과 치즈로만 만들어요.',
+    chefNote:'불을 끄는 게 핵심이에요. 열이 있으면 달걀이 스크램블이 돼요.',
+    plating:'깊은 볼에 담고 파르메산을 갈아 올린 뒤 흑후추를 넉넉히 뿌리세요.'
+  },
+  {
+    id:1010, name:'가스파초 (차가운 토마토 수프)', emoji:'🍅', time:'20분+냉장2시간', difficulty:'초급', servings:'4인분', category:'스페인식',
+    mainIngredients:['토마토','오이','양파'],
+    allIngredients:['토마토','오이','양파','마늘','파프리카','올리브오일','레드와인식초','소금','후추','바게트'],
+    amounts:{'토마토':'1kg (완숙)','오이':'1개','파프리카':'1개 (빨강)','올리브오일':'4큰술'},
+    steps:[
+      '모든 채소를 굵게 썰어 블렌더에 넣으세요.',
+      '올리브오일, 식초, 소금, 후추를 넣고 완전히 갈아주세요.',
+      '체에 걸러 부드럽게 만들고 냉장고에서 2시간 이상 차갑게 식히세요.',
+      '서빙 시 올리브오일을 한 바퀴 두르고 다진 채소를 토핑으로 올리세요.',
+    ],
+    tip:'토마토가 완숙일수록 맛있어요. 여름 제철 토마토로 만들어야 진짜 맛이 나요.',
+    chefNote:'가스파초는 스페인 안달루시아 지방 미슐랭 레스토랑의 여름 시그니처 메뉴예요.',
+    plating:'차가운 유리볼에 담고 얼음 몇 개와 함께 서빙하면 시각적으로도 훌륭해요.'
+  },
+  {
+    id:1011, name:'버터 포치드 랍스터', emoji:'🦞', time:'30분', difficulty:'고급', servings:'2인분', category:'해산물',
+    mainIngredients:['새우','버터','마늘'],
+    allIngredients:['새우','버터','마늘','타라곤','레몬','소금','후추'],
+    amounts:{'새우':'400g (왕새우)','버터':'150g (무염)','마늘':'4쪽'},
+    steps:[
+      '버터를 60°C로 녹여 거품이 없는 투명한 상태로 유지하세요.',
+      '새우에 소금·후추를 뿌리고 마늘, 타라곤과 함께 버터에 넣으세요.',
+      '<strong>60~65°C를 유지하며 8분</strong> 포치드하세요. 절대 끓이면 안 돼요.',
+      '버터소스를 레몬즙으로 마무리하고 새우를 담아 소스를 끼얹어 서빙하세요.',
+    ],
+    tip:'포치드 새우는 삶은 것보다 훨씬 촉촉하고 부드러워요.',
+    chefNote:'버터 포칭은 프렌치 파인 다이닝의 핵심 기법이에요. 온도 유지가 전부예요.',
+    plating:'깊은 접시에 새우를 올리고 버터소스를 테이블스푼으로 끼얹어 드라마틱하게 마무리하세요.'
+  },
+  {
+    id:1012, name:'라따뚜이', emoji:'🫕', time:'1시간 30분', difficulty:'중급', servings:'4인분', category:'프렌치',
+    mainIngredients:['가지','토마토','양파'],
+    allIngredients:['가지','토마토','양파','호박','파프리카','마늘','올리브오일','타임','바질'],
+    amounts:{'가지':'2개','토마토':'4개','호박':'2개','올리브오일':'6큰술'},
+    steps:[
+      '토마토 소스 베이스: 양파, 마늘, 토마토를 <strong>중불</strong>에서 20분 끓여 소스를 만드세요.',
+      '채소들을 2mm 두께로 얇게 슬라이스하세요. 만돌린 슬라이서를 사용하면 편해요.',
+      '소스를 오븐 용기에 깔고 채소를 색이 번갈아가게 기와처럼 올리세요.',
+      '올리브오일을 두르고 타임을 올린 뒤 <strong>180°C 오븐에서 45분</strong> 구우세요.',
+      '바질을 올려 마무리하세요.',
+    ],
+    tip:'영화 라따뚜이에 나오는 꽃 모양은 "콩피 비야르도" 스타일이에요.',
+    chefNote:'채소 두께를 균일하게 자르는 것이 시각적 아름다움의 핵심이에요.',
+    plating:'오븐 용기 그대로 테이블에 올려 러스틱하게 서빙하거나, 고급스럽게 개인 접시에 타워형으로 쌓으세요.'
+  },
+  {
+    id:1013, name:'포아그라 스타일 닭간 무스', emoji:'🍞', time:'1시간', difficulty:'고급', servings:'6인분', category:'프렌치',
+    mainIngredients:['닭고기','버터','양파'],
+    allIngredients:['닭고기','버터','양파','마늘','코냑','생크림','타임','소금','후추'],
+    amounts:{'닭고기':'300g (닭간)','버터':'100g','생크림':'50ml','코냑':'2큰술'},
+    steps:[
+      '닭간을 우유에 30분 담가 쓴맛을 제거하고 물기를 닦으세요.',
+      '버터에 양파와 마늘을 <strong>약불</strong>에서 15분 천천히 볶아 카라멜라이즈하세요.',
+      '닭간을 넣고 <strong>중불</strong>에서 분홍빛이 살짝 남을 때까지 볶으세요.',
+      '코냑을 넣고 불을 붙여 플람베하세요.',
+      '블렌더에 모든 재료와 생크림을 넣고 완전히 갈아 체에 거세요.',
+      '용기에 담아 냉장고에서 2시간 굳히세요.',
+    ],
+    tip:'포아그라의 저렴한 대안이지만 맛은 놀라워요.',
+    chefNote:'플람베는 선택사항이지만 알코올을 날려 풍미를 높이는 중요한 단계예요.',
+    plating:'바게트 슬라이스와 피클, 잼을 곁들여 샤퀴테리 보드처럼 서빙하세요.'
+  },
+  {
+    id:1014, name:'홀란다이즈 소스 에그 베네딕트', emoji:'🍳', time:'30분', difficulty:'고급', servings:'2인분', category:'브런치',
+    mainIngredients:['달걀','버터','레몬'],
+    allIngredients:['달걀','버터','레몬','잉글리시머핀','베이컨','식초','소금','후추'],
+    amounts:{'달걀':'4개 (소스용 2 + 포치드 2)','버터':'100g (정제)','레몬':'반 개'},
+    steps:[
+      '버터를 녹여 흰 유고형분을 제거한 정제버터를 만드세요.',
+      '달걀 노른자 2개와 레몬즙을 중탕 볼에 넣고 <strong>60°C에서</strong> 거품기로 2배 부풀 때까지 휘핑하세요.',
+      '불에서 내리고 정제버터를 방울방울 떨어뜨리며 에멀전화해 홀란다이즈 소스를 만드세요.',
+      '식초를 넣은 끓는 물에 소용돌이를 만들어 달걀을 넣고 <strong>3분</strong> 포치드하세요.',
+      '머핀 → 베이컨 → 포치드에그 → 홀란다이즈 순으로 올리세요.',
+    ],
+    tip:'홀란다이즈는 만들자마자 바로 사용해야 해요. 식으면 굳어서 쓸 수 없어요.',
+    chefNote:'버터를 너무 빨리 넣으면 소스가 분리돼요. 처음엔 한 방울씩 천천히 넣으세요.',
+    plating:'소스를 넉넉히 뿌리고 파프리카파우더 한 꼬집으로 색을 더하세요.'
+  },
+  {
+    id:1015, name:'마들렌 (프렌치 버터 케이크)', emoji:'🧁', time:'1시간', difficulty:'중급', servings:'12개', category:'디저트',
+    mainIngredients:['달걀','버터','밀가루'],
+    allIngredients:['달걀','버터','밀가루','설탕','꿀','베이킹파우더','레몬','소금'],
+    amounts:{'달걀':'2개','버터':'100g (무염)','밀가루':'100g','설탕':'100g','꿀':'1큰술'},
+    steps:[
+      '버터를 갈색이 될 때까지 가열해 <strong>뵈르 누아제트(헤이즐넛 버터)</strong>를 만드세요.',
+      '달걀, 설탕, 꿀을 흰색이 될 때까지 휘핑하세요.',
+      '체 친 밀가루와 베이킹파우더를 접듯이 섞으세요.',
+      '식힌 뵈르 누아제트와 레몬즙을 넣고 섞어 냉장고에서 <strong>1시간</strong> 휴지시키세요.',
+      '마들렌 틀에 버터를 바르고 <strong>200°C에서 10분</strong> 구우세요.',
+    ],
+    tip:'냉장 휴지가 마들렌의 특징인 배꼽 봉우리를 만들어줘요.',
+    chefNote:'뵈르 누아제트의 고소한 향이 마들렌을 특별하게 만드는 핵심이에요.',
+    plating:'따뜻할 때 슈가파우더를 뿌려 바로 서빙하세요. 프루스트의 추억처럼요.'
+  },
+];
+
+function findRecipes(mode) {
   const myIngredients = new Set(detectedIngredients);
   const desc = document.getElementById('recipe-desc');
+  const db = mode === 'michelin' ? MICHELIN_RECIPES : RECIPES;
 
-  const scored = RECIPES.map(r => {
+  const scored = db.map(r => {
     const allCount = r.allIngredients.length;
     const haveCount = r.allIngredients.filter(i => myIngredients.has(i)).length;
     const mainHave = r.mainIngredients.filter(i => myIngredients.has(i)).length;
@@ -2102,7 +2459,7 @@ function findRecipes() {
   if (scored.length === 0) {
     grid.innerHTML = `
       <div class="no-recipe">
-        <div class="no-recipe__icon">🤔</div>
+        <div class="no-recipe__icon">${mode === 'michelin' ? '⭐' : '🤔'}</div>
         <div class="no-recipe__text">매칭되는 레시피가 없어요.<br>재료를 더 추가해 보세요.</div>
       </div>`;
     return;
@@ -2112,12 +2469,13 @@ function findRecipes() {
     const ingTags = r.allIngredients.map(i =>
       `<span class="ing-tag ${myIngredients.has(i) ? 'have' : 'need'}">${i}</span>`
     ).join('');
+    const michelinBadge = mode === 'michelin' ? `<span class="michelin-badge">⭐ 미슐랭</span>` : '';
     return `
-      <div class="recipe-card" onclick="openModal(${r.id})">
+      <div class="recipe-card" onclick="openModal(${r.id}, '${mode}')">
         <div class="recipe-card__header">
           <div class="recipe-card__emoji">${r.emoji}</div>
           <div class="recipe-card__info">
-            <div class="recipe-card__name">${r.name}</div>
+            <div class="recipe-card__name">${r.name} ${michelinBadge}</div>
             <div class="recipe-card__meta">
               <span class="meta-tag">⏱ ${r.time}</span>
               <span class="meta-tag">${r.difficulty}</span>
@@ -2135,10 +2493,10 @@ function findRecipes() {
   }).join('');
 }
 
-document.getElementById('back-to-2-btn').addEventListener('click', () => goTo(2));
+document.getElementById('back-to-2-btn').addEventListener('click', () => goTo(3));
 document.getElementById('go-to-fridge-btn').addEventListener('click', () => {
   initFridgeScreen();
-  goTo(4);
+  goTo(5);
 });
 
 // ═══════════════════════════════════════════════
@@ -2146,14 +2504,16 @@ document.getElementById('go-to-fridge-btn').addEventListener('click', () => {
 // ═══════════════════════════════════════════════
 const modalOverlay = document.getElementById('modal-overlay');
 
-window.openModal = function(id) {
-  const recipe = RECIPES.find(r => r.id === id);
+window.openModal = function(id, mode) {
+  const db = (mode === 'michelin' || id >= 1000) ? MICHELIN_RECIPES : RECIPES;
+  const recipe = db.find(r => r.id === id) || RECIPES.find(r => r.id === id) || MICHELIN_RECIPES.find(r => r.id === id);
   if (!recipe) return;
   _currentModalId = id;
+  const isMichelin = id >= 1000;
   const myIngredients = new Set(detectedIngredients);
 
   document.getElementById('modal-emoji').textContent = recipe.emoji;
-  document.getElementById('modal-title').textContent = recipe.name;
+  document.getElementById('modal-title').innerHTML = recipe.name + (isMichelin ? ' <span class="michelin-badge">⭐ 미슐랭</span>' : '');
   document.getElementById('modal-meta').innerHTML = `
     <span class="meta-tag">⏱ ${recipe.time}</span>
     <span class="meta-tag">${recipe.difficulty}</span>
@@ -2177,6 +2537,24 @@ window.openModal = function(id) {
     tipEl.style.display = 'flex';
   } else {
     tipEl.style.display = 'none';
+  }
+
+  // 미슐랭 전용: 셰프 노트 + 플레이팅
+  let chefNoteEl = document.getElementById('modal-chef-note');
+  if (!chefNoteEl) {
+    chefNoteEl = document.createElement('div');
+    chefNoteEl.id = 'modal-chef-note';
+    tipEl.parentNode.insertBefore(chefNoteEl, tipEl);
+  }
+  if (isMichelin && (recipe.chefNote || recipe.plating)) {
+    chefNoteEl.innerHTML = `
+      ${recipe.chefNote ? `<div class="modal__chef-note"><div class="modal__chef-note-icon">👨‍🍳</div><div class="modal__chef-note-text"><strong>셰프 노트:</strong> ${recipe.chefNote}</div></div>` : ''}
+      ${recipe.plating ? `<div class="modal__chef-note"><div class="modal__chef-note-icon">🍽️</div><div class="modal__chef-note-text"><strong>플레이팅:</strong> ${recipe.plating}</div></div>` : ''}
+    `;
+    chefNoteEl.style.display = 'block';
+  } else {
+    chefNoteEl.style.display = 'none';
+    chefNoteEl.innerHTML = '';
   }
 
   updateModalFavBtn(id);
@@ -2649,7 +3027,7 @@ document.getElementById('save-fridge-btn').addEventListener('click', () => {
   openFridgeModal();
 });
 
-document.getElementById('back-to-3-btn').addEventListener('click', () => goTo(3));
+document.getElementById('back-to-3-btn').addEventListener('click', () => goTo(4));
 
 // ═══════════════════════════════════════════════
 // 12. 냉장고 모달
