@@ -69,6 +69,30 @@
       transition: all 0.2s;
     }
     .fridge-top-btn:hover { background: var(--green); color: white; }
+    .fridge-top-btn { position: relative; }
+    .fridge-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid white;
+      animation: badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .fridge-badge.hidden { display: none; }
+    @keyframes badgePop {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
 
     /* ── Top Bar ── */
     .topbar {
@@ -842,7 +866,7 @@
       <span class="topbar__icon">🍽️</span>
       <span class="topbar__title">레시피 <span>추천</span></span>
     </div>
-    <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고</button>
+    <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고<span class="fridge-badge hidden" id="fridge-badge"></span></button>
   </div>
 
   <!-- Steps -->
@@ -1936,6 +1960,7 @@ function loadFridge() {
 }
 function saveFridge(items) {
   localStorage.setItem('fridge', JSON.stringify(items));
+  updateFridgeBadge();
 }
 
 // ═══════════════════════════════════════════════
@@ -2113,11 +2138,12 @@ function openFridgeModal() {
 
 window.deleteFromFridge = function(name) {
   saveFridge(loadFridge().filter(it => it.name !== name));
+  updateFridgeBadge();
   openFridgeModal();
 };
 
 document.getElementById('fridge-clear-btn').addEventListener('click', () => {
-  if (confirm('냉장고를 모두 비울까요?')) { saveFridge([]); closeFridgeModal(); }
+  if (confirm('냉장고를 모두 비울까요?')) { saveFridge([]); updateFridgeBadge(); closeFridgeModal(); }
 });
 
 document.getElementById('use-expiring-btn').addEventListener('click', () => {
@@ -2142,8 +2168,27 @@ function closeFridgeModal() {
   document.body.style.overflow = '';
 }
 
+// 냉장고 배지: 오늘 ~ 3일 이내 만료 재료 수 표시
+function updateFridgeBadge() {
+  const badge = document.getElementById('fridge-badge');
+  if (!badge) return;
+  const items = loadFridge();
+  const urgentCount = items.filter(item => {
+    const d = calcDday(item.expiryDate);
+    return d <= 3; // 오늘 포함 3일 이내 (음수 = 이미 만료)
+  }).length;
+  if (urgentCount > 0) {
+    badge.textContent = urgentCount;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
 // 스플래시 화면
 window.addEventListener('DOMContentLoaded', () => {
+  updateFridgeBadge();
+
   const splash = document.getElementById('splash');
   if (splash) {
     setTimeout(() => {
