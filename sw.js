@@ -1,4 +1,4 @@
-const CACHE = 'recipe-app-v1';
+const CACHE = 'recipe-app-v2';
 const ASSETS = [
   './index.html',
   './manifest.json',
