@@ -602,6 +602,10 @@
       gap: 14px;
       margin-top: 8px;
     }
+    @keyframes cardFadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .recipe-card {
       background: var(--white);
       border: 1.5px solid var(--border);
@@ -609,6 +613,8 @@
       padding: 16px;
       cursor: pointer;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      opacity: 0;
+      animation: cardFadeUp 0.4s ease both;
     }
     .recipe-card:hover { border-color: var(--green); box-shadow: var(--shadow); transform: translateY(-2px); }
     .recipe-card__header {
@@ -2617,13 +2623,14 @@ function findRecipes(mode) {
     return;
   }
 
-  grid.innerHTML = scored.map(r => {
+  grid.innerHTML = scored.map((r, idx) => {
     const ingTags = r.allIngredients.map(i =>
       `<span class="ing-tag ${myIngredients.has(i) ? 'have' : 'need'}">${i}</span>`
     ).join('');
     const michelinBadge = mode === 'michelin' ? `<div><span class="michelin-badge">⭐ 미슐랭</span></div>` : '';
+    const delay = `animation-delay:${idx * 0.07}s`;
     return `
-      <div class="recipe-card" onclick="openModal(${r.id}, '${mode}')">
+      <div class="recipe-card" style="${delay}" onclick="openModal(${r.id}, '${mode}')">
         <div class="recipe-card__header">
           <div class="recipe-card__emoji">${r.emoji}</div>
           <div class="recipe-card__info">
