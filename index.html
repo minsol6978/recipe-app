@@ -2704,7 +2704,7 @@ function updateShoppingBadge() {
 // 레시피 모달에서 장보기 추가
 function addToShoppingFromModal() {
   if (_currentModalId === null) return;
-  const recipe = RECIPES.find(r => r.id === _currentModalId);
+  const recipe = RECIPES.find(r => r.id === _currentModalId) || MICHELIN_RECIPES.find(r => r.id === _currentModalId);
   if (!recipe) return;
 
   const fridgeNames = new Set(loadFridge().map(f => f.name));
