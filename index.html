@@ -3309,15 +3309,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const splash = document.getElementById('splash');
   const onboarding = document.getElementById('onboarding');
-  const alreadyOnboarded = localStorage.getItem('onboarded');
 
   if (splash) {
     setTimeout(() => {
       splash.classList.add('hide');
       setTimeout(() => {
         splash.remove();
-        if (!alreadyOnboarded) {
+        // 스플래시 끝나는 순간 localStorage를 다시 읽어서 최신 상태 반영
+        if (!localStorage.getItem('onboarded')) {
           onboarding.style.display = 'flex';
+          if (window.showOnboarding) window.showOnboarding();
         } else {
           onboarding.style.display = 'none';
         }
