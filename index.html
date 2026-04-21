@@ -2721,7 +2721,11 @@ function addToShoppingFromModal() {
   const recipe = RECIPES.find(r => r.id === _currentModalId) || MICHELIN_RECIPES.find(r => r.id === _currentModalId);
   if (!recipe) return;
 
-  const fridgeNames = new Set(loadFridge().map(f => f.name));
+  // 냉장고 저장 항목 + 이번 스캔에서 인식된 재료 모두 "보유 중"으로 처리
+  const fridgeNames = new Set([
+    ...loadFridge().map(f => f.name),
+    ...detectedIngredients
+  ]);
   const existing = new Set(loadShopping().map(s => s.name));
   const shopping = loadShopping();
   let added = 0;
