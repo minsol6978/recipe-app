@@ -1351,7 +1351,7 @@
 
   <!-- Top Bar -->
   <div class="topbar">
-    <div class="topbar__logo" id="logo-btn" style="cursor:pointer;" title="앱 소개 다시 보기">
+    <div class="topbar__logo" id="logo-btn" style="cursor:pointer;" title="처음으로 돌아가기">
       <span class="topbar__icon">🍽️</span>
       <span class="topbar__title">레시피 <span>추천</span></span>
     </div>
@@ -2738,6 +2738,36 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+function resetToHome() {
+  // 열린 모달 모두 닫기
+  document.body.style.overflow = '';
+  document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
+
+  // 스캔 상태 초기화
+  selectedFile = null;
+  detectedIngredients = [];
+  previewImg.src = '';
+  previewImg.classList.remove('show');
+  clearBtn.classList.remove('show');
+  placeholder.style.display = '';
+  uploadArea.classList.remove('has-image');
+  document.getElementById('progress-wrap').style.display = 'none';
+  scanBtn.disabled = false;
+  scanBtn.textContent = '🔍 재료 분석 시작';
+
+  // 재료 태그 초기화
+  const tagGrid = document.getElementById('tag-grid');
+  if (tagGrid) tagGrid.innerHTML = '';
+  const ingCount = document.getElementById('ing-count');
+  if (ingCount) ingCount.textContent = '0';
+
+  // 레시피 그리드 초기화
+  const recipeGrid = document.getElementById('recipe-grid');
+  if (recipeGrid) recipeGrid.innerHTML = '';
+
+  goTo(1);
+}
+
 // ═══════════════════════════════════════════════
 // 9-0. 즐겨찾기
 // ═══════════════════════════════════════════════
@@ -3382,7 +3412,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (currentSlide < TOTAL - 1) { currentSlide++; updateOnboarding(); }
     });
 
-    document.getElementById('logo-btn').addEventListener('click', window.showOnboarding);
+    document.getElementById('logo-btn').addEventListener('click', resetToHome);
 
     // 스와이프 지원
     let startX = 0;
