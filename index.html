@@ -721,9 +721,118 @@
     }
     .fridge-item__del:hover { border-color: #ef4444; color: #ef4444; }
     #fridge-urgent-section { display: none; }
+
+    /* ── Splash Screen ── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(150deg, #14532d 0%, #16a34a 45%, #4ade80 100%);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      overflow: hidden;
+    }
+    #splash.hide {
+      opacity: 0;
+      transform: scale(1.06);
+      pointer-events: none;
+    }
+    .splash__bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .splash__bg-circle:nth-child(1) { width: 400px; height: 400px; top: -120px; right: -100px; }
+    .splash__bg-circle:nth-child(2) { width: 300px; height: 300px; bottom: -80px; left: -80px; }
+    .splash__bg-circle:nth-child(3) { width: 160px; height: 160px; bottom: 120px; right: 30px; }
+    .splash__content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .splash__icon-wrap {
+      width: 110px;
+      height: 110px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 32px;
+      border: 2px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      animation: splashPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .splash__icon-wrap img { width: 72px; height: 72px; }
+    .splash__title {
+      font-size: 30px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      animation: splashUp 0.5s ease 0.25s both;
+    }
+    .splash__sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      font-weight: 500;
+      animation: splashUp 0.5s ease 0.35s both;
+    }
+    .splash__dots {
+      display: flex;
+      gap: 7px;
+      margin-top: 52px;
+      animation: splashUp 0.5s ease 0.45s both;
+    }
+    .splash__dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .splash__dot:nth-child(2) { animation-delay: 0.2s; }
+    .splash__dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes splashPop {
+      0%   { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+      70%  { transform: scale(1.08) rotate(2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes splashUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes dotPulse {
+      0%, 100% { transform: translateY(0);   opacity: 0.4; }
+      50%       { transform: translateY(-8px); opacity: 1; background: white; }
+    }
   </style>
 </head>
 <body>
+
+<div id="splash">
+  <div class="splash__bg-circle"></div>
+  <div class="splash__bg-circle"></div>
+  <div class="splash__bg-circle"></div>
+  <div class="splash__content">
+    <div class="splash__icon-wrap">
+      <img src="./icon.svg" alt="레시피 추천">
+    </div>
+    <div class="splash__title">레시피 추천</div>
+    <div class="splash__sub">영수증 한 장으로 오늘의 요리를</div>
+    <div class="splash__dots">
+      <div class="splash__dot"></div>
+      <div class="splash__dot"></div>
+      <div class="splash__dot"></div>
+    </div>
+  </div>
+</div>
 
 <div class="app">
 
@@ -2032,6 +2141,17 @@ function closeFridgeModal() {
   document.getElementById('fridge-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// 스플래시 화면
+window.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splash');
+  if (splash) {
+    setTimeout(() => {
+      splash.classList.add('hide');
+      setTimeout(() => splash.remove(), 700);
+    }, 1800);
+  }
+});
 
 // 서비스 워커 등록
 if ('serviceWorker' in navigator) {
