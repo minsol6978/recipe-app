@@ -2173,12 +2173,9 @@ function updateFridgeBadge() {
   const badge = document.getElementById('fridge-badge');
   if (!badge) return;
   const items = loadFridge();
-  const urgentCount = items.filter(item => {
-    const d = calcDday(item.expiryDate);
-    return d <= 3; // 오늘 포함 3일 이내 (음수 = 이미 만료)
-  }).length;
-  if (urgentCount > 0) {
-    badge.textContent = urgentCount;
+  const count = items.length;
+  if (count > 0) {
+    badge.textContent = count;
     badge.classList.remove('hidden');
   } else {
     badge.classList.add('hidden');
