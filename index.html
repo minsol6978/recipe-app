@@ -1345,7 +1345,7 @@
 
   <!-- Top Bar -->
   <div class="topbar">
-    <div class="topbar__logo">
+    <div class="topbar__logo" id="logo-btn" style="cursor:pointer;" title="앱 소개 다시 보기">
       <span class="topbar__icon">🍽️</span>
       <span class="topbar__title">레시피 <span>추천</span></span>
     </div>
@@ -3316,9 +3316,10 @@ window.addEventListener('DOMContentLoaded', () => {
       splash.classList.add('hide');
       setTimeout(() => {
         splash.remove();
-        // 첫 실행 시에만 온보딩 표시
         if (!alreadyOnboarded) {
           onboarding.style.display = 'flex';
+        } else {
+          onboarding.style.display = 'none';
         }
       }, 700);
     }, 1800);
@@ -3357,14 +3358,23 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('onboarded', '1');
     const ob = document.getElementById('onboarding');
     ob.classList.add('hide');
-    setTimeout(() => ob.remove(), 400);
+    setTimeout(() => { ob.style.display = 'none'; ob.classList.remove('hide'); }, 400);
   }
+
+  window.showOnboarding = function() {
+    currentSlide = 0;
+    const ob = document.getElementById('onboarding');
+    ob.style.display = 'flex';
+    updateOnboarding();
+  };
 
   window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ob-skip-btn').addEventListener('click', finishOnboarding);
     document.getElementById('ob-next-btn').addEventListener('click', () => {
       if (currentSlide < TOTAL - 1) { currentSlide++; updateOnboarding(); }
     });
+
+    document.getElementById('logo-btn').addEventListener('click', window.showOnboarding);
 
     // 스와이프 지원
     let startX = 0;
