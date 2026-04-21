@@ -1,4 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#22c55e"/>
-  <text x="256" y="340" font-size="280" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,sans-serif">🍽️</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+  </defs>
+  <!-- 배경 -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <!-- 접시 -->
+  <circle cx="256" cy="268" r="148" fill="white" opacity="0.15"/>
+  <circle cx="256" cy="268" r="120" fill="white" opacity="0.95"/>
+  <!-- 포크 (왼쪽) -->
+  <rect x="212" y="310" width="13" height="76" rx="6" fill="#16a34a"/>
+  <rect x="212" y="242" width="13" height="72" rx="4" fill="#16a34a"/>
+  <rect x="203" y="188" width="4" height="56" rx="2" fill="#16a34a"/>
+  <rect x="212" y="188" width="4" height="56" rx="2" fill="#16a34a"/>
+  <rect x="221" y="188" width="4" height="56" rx="2" fill="#16a34a"/>
+  <path d="M203 238 Q203 248 212.5 250 Q222 248 222 238 L222 244 Q212.5 255 203 244 Z" fill="#16a34a"/>
+  <!-- 나이프 (오른쪽) -->
+  <rect x="295" y="242" width="13" height="144" rx="6" fill="#22c55e"/>
+  <path d="M295 188 Q320 210 308 242 L295 242 Z" fill="#22c55e"/>
 </svg>
