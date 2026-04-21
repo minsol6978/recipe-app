@@ -2629,17 +2629,22 @@ function openFavModal() {
   const favIds = loadFavs();
   const countEl = document.getElementById('fav-count');
   const listEl = document.getElementById('fav-list');
-  countEl.textContent = `${favIds.length}개`;
 
-  if (favIds.length === 0) {
+  // 두 DB 모두에서 찾기
+  const favRecipes = favIds.map(id =>
+    RECIPES.find(r => r.id === id) || MICHELIN_RECIPES.find(r => r.id === id)
+  ).filter(Boolean);
+
+  countEl.textContent = `${favRecipes.length}개`;
+
+  if (favRecipes.length === 0) {
     listEl.innerHTML = `
       <div class="fav-empty">
         <div class="fav-empty__icon">♡</div>
         <div>아직 즐겨찾기한 레시피가 없어요.<br>레시피 카드의 ♡를 눌러 저장해 보세요!</div>
       </div>`;
   } else {
-    listEl.innerHTML = favIds.map(id => {
-      const r = RECIPES.find(rec => rec.id === id);
+    listEl.innerHTML = favRecipes.map(r => {
       if (!r) return '';
       return `
         <div class="fav-item" onclick="closeFavModal();openModal(${r.id})">
@@ -2661,7 +2666,7 @@ function closeFavModal() {
   document.body.style.overflow = '';
 }
 window.removeFav = function(id) {
-  const favs = loadFavs().filter(f => f !== id);
+  const favs = loadFavs().filter(f => f !== Number(id));
   saveFavs(favs);
   openFavModal(); // 목록 갱신
   syncCardFavBtns();
