@@ -274,7 +274,24 @@
       color: var(--text);
     }
     .shop-item.checked .shop-item__name { text-decoration: line-through; }
-    .shop-item__from { font-size: 11px; color: var(--text-sub); }
+    .shop-item__from { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
+    .shop-item__links { display: flex; gap: 5px; flex-wrap: wrap; }
+    .shop-link {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1.4;
+      transition: opacity 0.15s;
+    }
+    .shop-link:active { opacity: 0.7; }
+    .shop-link--coupang  { background: #fee2e2; color: #c0392b; }
+    .shop-link--naver    { background: #dcfce7; color: #15803d; }
+    .shop-link--kurly    { background: #ede9fe; color: #7c3aed; }
     .shop-item__del {
       background: none; border: none;
       font-size: 16px; cursor: pointer;
@@ -2366,16 +2383,23 @@ function renderShoppingList() {
     return;
   }
 
-  listEl.innerHTML = items.map((item, idx) => `
+  listEl.innerHTML = items.map((item, idx) => {
+    const q = encodeURIComponent(item.name);
+    return `
     <div class="shop-item ${item.checked ? 'checked' : ''}" onclick="toggleShoppingItem(${idx})">
       <div class="shop-item__check">${item.checked ? '✓' : ''}</div>
       <div style="flex:1;min-width:0;">
         <div class="shop-item__name">${item.name}</div>
         <div class="shop-item__from">${item.fromRecipe} 레시피</div>
+        <div class="shop-item__links" onclick="event.stopPropagation()">
+          <a class="shop-link shop-link--coupang" href="https://www.coupang.com/np/search?q=${q}" target="_blank" rel="noopener">쿠팡</a>
+          <a class="shop-link shop-link--naver"   href="https://search.shopping.naver.com/search/all?query=${q}" target="_blank" rel="noopener">네이버</a>
+          <a class="shop-link shop-link--kurly"   href="https://www.kurly.com/search?sword=${q}" target="_blank" rel="noopener">컬리</a>
+        </div>
       </div>
       <button class="shop-item__del" onclick="event.stopPropagation();deleteShoppingItem(${idx})">✕</button>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 window.toggleShoppingItem = function(idx) {
