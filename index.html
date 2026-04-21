@@ -62,14 +62,15 @@
       color: var(--green-dark);
       border: 1.5px solid var(--green);
       border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 5px 10px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
+      position: relative;
     }
     .fridge-top-btn:hover { background: var(--green); color: white; }
-    .fridge-top-btn { position: relative; }
     .fridge-badge {
       position: absolute;
       top: -6px;
@@ -100,12 +101,13 @@
       color: #e11d48;
       border: 1.5px solid #fda4af;
       border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 5px 10px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
       position: relative;
+      white-space: nowrap;
     }
     .fav-top-btn:hover { background: #e11d48; color: white; border-color: #e11d48; }
 
@@ -184,12 +186,13 @@
       color: #d97706;
       border: 1.5px solid #fcd34d;
       border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 5px 10px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
       position: relative;
+      white-space: nowrap;
     }
     .shop-top-btn:hover { background: #d97706; color: white; border-color: #d97706; }
     .shop-badge {
@@ -324,10 +327,12 @@
     .topbar__logo {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-shrink: 1;
+      min-width: 0;
     }
-    .topbar__icon { font-size: 24px; line-height: 1; }
-    .topbar__title { font-size: 18px; font-weight: 800; color: var(--text); }
+    .topbar__icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+    .topbar__title { font-size: 16px; font-weight: 800; color: var(--text); white-space: nowrap; }
     .topbar__title span { color: var(--green); }
     .topbar__badge {
       background: var(--green-light);
@@ -1081,7 +1086,7 @@
       <span class="topbar__icon">🍽️</span>
       <span class="topbar__title">레시피 <span>추천</span></span>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
+    <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
       <button class="fav-top-btn" id="fav-view-btn">♥ 즐겨찾기</button>
       <button class="shop-top-btn" id="shop-view-btn">🛒 장보기<span class="shop-badge hidden" id="shop-badge"></span></button>
       <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고<span class="fridge-badge hidden" id="fridge-badge"></span></button>
