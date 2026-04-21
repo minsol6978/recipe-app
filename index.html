@@ -178,6 +178,137 @@
     .fav-empty { text-align: center; padding: 40px 0; color: var(--text-sub); font-size: 14px; }
     .fav-empty__icon { font-size: 40px; margin-bottom: 12px; }
 
+    /* ── Shopping Button ── */
+    .shop-top-btn {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1.5px solid #fcd34d;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .shop-top-btn:hover { background: #d97706; color: white; border-color: #d97706; }
+    .shop-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #d97706;
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid white;
+      animation: badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .shop-badge.hidden { display: none; }
+
+    /* ── Modal Shopping Btn ── */
+    .modal-shop-btn {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1.5px solid #fcd34d;
+      border-radius: 16px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .modal-shop-btn:hover { background: #d97706; color: white; border-color: #d97706; }
+
+    /* ── Shopping Modal ── */
+    .shop-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .shop-modal__title { font-size: 18px; font-weight: 800; color: var(--text); }
+    .shop-modal__count { font-size: 13px; color: var(--text-sub); }
+    .shop-list { display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto; margin-bottom: 12px; }
+    .shop-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .shop-item:hover { background: #fffbeb; }
+    .shop-item.checked { opacity: 0.45; }
+    .shop-item__check {
+      width: 22px; height: 22px;
+      border: 2px solid #fcd34d;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      background: white;
+      transition: all 0.15s;
+    }
+    .shop-item.checked .shop-item__check { background: #d97706; border-color: #d97706; color: white; }
+    .shop-item__name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .shop-item.checked .shop-item__name { text-decoration: line-through; }
+    .shop-item__from { font-size: 11px; color: var(--text-sub); }
+    .shop-item__del {
+      background: none; border: none;
+      font-size: 16px; cursor: pointer;
+      color: #9ca3af; padding: 4px;
+      transition: color 0.15s;
+    }
+    .shop-item__del:hover { color: #ef4444; }
+    .shop-actions {
+      display: flex; gap: 8px; margin-top: 4px;
+    }
+    .shop-save-btn {
+      flex: 2;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .shop-save-btn:hover { background: var(--green-dark); }
+    .shop-clear-btn {
+      flex: 1;
+      background: var(--bg);
+      color: var(--text-sub);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .shop-empty { text-align: center; padding: 40px 0; color: var(--text-sub); font-size: 14px; }
+    .shop-empty__icon { font-size: 40px; margin-bottom: 12px; }
+
     /* ── Top Bar ── */
     .topbar {
       display: flex;
@@ -952,6 +1083,7 @@
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
       <button class="fav-top-btn" id="fav-view-btn">♥ 즐겨찾기</button>
+      <button class="shop-top-btn" id="shop-view-btn">🛒 장보기<span class="shop-badge hidden" id="shop-badge"></span></button>
       <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고<span class="fridge-badge hidden" id="fridge-badge"></span></button>
     </div>
   </div>
@@ -1114,7 +1246,25 @@
       <div class="modal__tip-text" id="modal-tip-text"></div>
     </div>
     <button class="modal-fav-btn" id="modal-fav-btn" onclick="toggleFavFromModal()">♡ 즐겨찾기 추가</button>
+    <button class="modal-shop-btn" id="modal-shop-btn" onclick="addToShoppingFromModal()">🛒 장보기 목록에 추가</button>
     <button class="modal__close" id="modal-close">닫기</button>
+  </div>
+</div>
+
+<!-- ── Shopping Modal ── -->
+<div class="modal-overlay" id="shop-overlay">
+  <div class="modal">
+    <div class="modal__handle"></div>
+    <div class="shop-modal__header">
+      <span class="shop-modal__title">🛒 장보기 목록</span>
+      <span class="shop-modal__count" id="shop-count"></span>
+    </div>
+    <div class="shop-list" id="shop-list"></div>
+    <div class="shop-actions">
+      <button class="shop-save-btn" id="shop-save-btn">🧊 구매 완료 → 냉장고에 저장</button>
+      <button class="shop-clear-btn" id="shop-clear-btn">전체 삭제</button>
+    </div>
+    <button class="modal__close" style="margin-top:10px" id="shop-modal-close">닫기</button>
   </div>
 </div>
 
@@ -2094,6 +2244,162 @@ document.getElementById('fav-overlay').addEventListener('click', e => {
 });
 
 // ═══════════════════════════════════════════════
+// 9-1. 장보기 목록
+// ═══════════════════════════════════════════════
+function loadShopping() {
+  try { return JSON.parse(localStorage.getItem('shopping') || '[]'); } catch { return []; }
+}
+function saveShopping(items) {
+  localStorage.setItem('shopping', JSON.stringify(items));
+  updateShoppingBadge();
+}
+
+function updateShoppingBadge() {
+  const badge = document.getElementById('shop-badge');
+  if (!badge) return;
+  const total = loadShopping().filter(i => !i.checked).length;
+  if (total > 0) {
+    badge.textContent = total;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+// 레시피 모달에서 장보기 추가
+function addToShoppingFromModal() {
+  if (_currentModalId === null) return;
+  const recipe = RECIPES.find(r => r.id === _currentModalId);
+  if (!recipe) return;
+
+  const fridgeNames = new Set(loadFridge().map(f => f.name));
+  const existing = new Set(loadShopping().map(s => s.name));
+  const shopping = loadShopping();
+  let added = 0;
+
+  recipe.allIngredients.forEach(name => {
+    if (!fridgeNames.has(name) && !existing.has(name)) {
+      shopping.push({ name, checked: false, fromRecipe: recipe.name });
+      existing.add(name);
+      added++;
+    }
+  });
+
+  saveShopping(shopping);
+
+  const btn = document.getElementById('modal-shop-btn');
+  if (added > 0) {
+    btn.textContent = `✓ ${added}개 추가됨!`;
+    btn.style.background = '#d97706';
+    btn.style.color = 'white';
+  } else {
+    btn.textContent = '✓ 이미 모두 목록에 있어요';
+    btn.style.background = '#e5e7eb';
+    btn.style.color = '#6b7280';
+  }
+  setTimeout(() => {
+    btn.textContent = '🛒 장보기 목록에 추가';
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 2000);
+}
+
+// 장보기 모달 열기/닫기
+function openShoppingModal() {
+  renderShoppingList();
+  document.getElementById('shop-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeShoppingModal() {
+  document.getElementById('shop-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderShoppingList() {
+  const items = loadShopping();
+  const countEl = document.getElementById('shop-count');
+  const listEl = document.getElementById('shop-list');
+  const unchecked = items.filter(i => !i.checked).length;
+  countEl.textContent = `${unchecked}개 남음 / 총 ${items.length}개`;
+
+  if (items.length === 0) {
+    listEl.innerHTML = `
+      <div class="shop-empty">
+        <div class="shop-empty__icon">🛒</div>
+        <div>장보기 목록이 비어있어요.<br>레시피 상세에서 🛒 버튼을 눌러 추가해 보세요!</div>
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = items.map((item, idx) => `
+    <div class="shop-item ${item.checked ? 'checked' : ''}" onclick="toggleShoppingItem(${idx})">
+      <div class="shop-item__check">${item.checked ? '✓' : ''}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="shop-item__name">${item.name}</div>
+        <div class="shop-item__from">${item.fromRecipe} 레시피</div>
+      </div>
+      <button class="shop-item__del" onclick="event.stopPropagation();deleteShoppingItem(${idx})">✕</button>
+    </div>
+  `).join('');
+}
+
+window.toggleShoppingItem = function(idx) {
+  const items = loadShopping();
+  items[idx].checked = !items[idx].checked;
+  saveShopping(items);
+  renderShoppingList();
+};
+
+window.deleteShoppingItem = function(idx) {
+  const items = loadShopping();
+  items.splice(idx, 1);
+  saveShopping(items);
+  renderShoppingList();
+};
+
+// 구매 완료 항목을 냉장고에 저장
+document.getElementById('shop-save-btn').addEventListener('click', () => {
+  const items = loadShopping();
+  const toSave = items.filter(i => i.checked);
+  if (toSave.length === 0) {
+    alert('구매 완료 표시(✓)된 항목이 없어요.');
+    return;
+  }
+  const fridge = loadFridge();
+  const fridgeNames = new Set(fridge.map(f => f.name));
+  toSave.forEach(item => {
+    if (!fridgeNames.has(item.name)) {
+      const expDays = EXPIRY_DAYS[item.name] || 7;
+      fridge.push({
+        id: Date.now() + Math.random(),
+        name: item.name,
+        purchaseDate: todayStr(),
+        expiryDate: addDays(todayStr(), expDays)
+      });
+      fridgeNames.add(item.name);
+    }
+  });
+  saveFridge(fridge);
+  // 저장된 항목 목록에서 제거
+  saveShopping(items.filter(i => !i.checked));
+  renderShoppingList();
+  alert(`🧊 ${toSave.length}개 재료를 냉장고에 저장했어요!`);
+});
+
+document.getElementById('shop-clear-btn').addEventListener('click', () => {
+  if (confirm('장보기 목록을 모두 삭제할까요?')) {
+    saveShopping([]);
+    renderShoppingList();
+  }
+});
+
+document.getElementById('shop-view-btn').addEventListener('click', openShoppingModal);
+document.getElementById('shop-modal-close').addEventListener('click', closeShoppingModal);
+document.getElementById('shop-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('shop-overlay')) closeShoppingModal();
+});
+
+// ═══════════════════════════════════════════════
 // 9. 유통기한 DB (냉장 기준, 단위: 일)
 // ═══════════════════════════════════════════════
 const EXPIRY_DAYS = {
@@ -2392,6 +2698,7 @@ function updateFridgeBadge() {
 // 스플래시 화면
 window.addEventListener('DOMContentLoaded', () => {
   updateFridgeBadge();
+  updateShoppingBadge();
 
   const splash = document.getElementById('splash');
   if (splash) {
