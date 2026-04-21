@@ -988,13 +988,18 @@
 
     /* ── Michelin badge on recipe card ── */
     .michelin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
       font-size: 11px;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 20px;
       background: linear-gradient(90deg, #7c3aed, #a855f7);
       color: white;
+      white-space: nowrap;
       flex-shrink: 0;
+      margin-top: 5px;
     }
 
     /* ── Michelin modal extras ── */
@@ -2469,13 +2474,14 @@ function findRecipes(mode) {
     const ingTags = r.allIngredients.map(i =>
       `<span class="ing-tag ${myIngredients.has(i) ? 'have' : 'need'}">${i}</span>`
     ).join('');
-    const michelinBadge = mode === 'michelin' ? `<span class="michelin-badge">⭐ 미슐랭</span>` : '';
+    const michelinBadge = mode === 'michelin' ? `<div><span class="michelin-badge">⭐ 미슐랭</span></div>` : '';
     return `
       <div class="recipe-card" onclick="openModal(${r.id}, '${mode}')">
         <div class="recipe-card__header">
           <div class="recipe-card__emoji">${r.emoji}</div>
           <div class="recipe-card__info">
-            <div class="recipe-card__name">${r.name} ${michelinBadge}</div>
+            <div class="recipe-card__name">${r.name}</div>
+            ${michelinBadge}
             <div class="recipe-card__meta">
               <span class="meta-tag">⏱ ${r.time}</span>
               <span class="meta-tag">${r.difficulty}</span>
@@ -2513,7 +2519,15 @@ window.openModal = function(id, mode) {
   const myIngredients = new Set(detectedIngredients);
 
   document.getElementById('modal-emoji').textContent = recipe.emoji;
-  document.getElementById('modal-title').innerHTML = recipe.name + (isMichelin ? ' <span class="michelin-badge">⭐ 미슐랭</span>' : '');
+  document.getElementById('modal-title').textContent = recipe.name;
+  let modalBadgeEl = document.getElementById('modal-michelin-badge');
+  if (!modalBadgeEl) {
+    modalBadgeEl = document.createElement('div');
+    modalBadgeEl.id = 'modal-michelin-badge';
+    modalBadgeEl.style.marginTop = '4px';
+    document.getElementById('modal-title').after(modalBadgeEl);
+  }
+  modalBadgeEl.innerHTML = isMichelin ? '<span class="michelin-badge">⭐ 미슐랭</span>' : '';
   document.getElementById('modal-meta').innerHTML = `
     <span class="meta-tag">⏱ ${recipe.time}</span>
     <span class="meta-tag">${recipe.difficulty}</span>
