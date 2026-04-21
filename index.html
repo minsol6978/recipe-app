@@ -1351,9 +1351,9 @@
 
   <!-- Top Bar -->
   <div class="topbar">
-    <div class="topbar__logo" id="logo-btn" style="cursor:pointer;" title="처음으로 돌아가기">
-      <span class="topbar__icon">🍽️</span>
-      <span class="topbar__title">레시피 <span>추천</span></span>
+    <div class="topbar__logo">
+      <span class="topbar__icon" id="icon-btn" style="cursor:pointer;" title="앱 소개 보기">🍽️</span>
+      <span class="topbar__title" id="logo-btn" style="cursor:pointer;" title="처음으로 돌아가기">레시피 <span>추천</span></span>
     </div>
     <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
       <button class="fav-top-btn" id="fav-view-btn">♥ 즐겨찾기</button>
@@ -3413,6 +3413,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('logo-btn').addEventListener('click', resetToHome);
+    document.getElementById('icon-btn').addEventListener('click', window.showOnboarding);
 
     // 스와이프 지원
     let startX = 0;
