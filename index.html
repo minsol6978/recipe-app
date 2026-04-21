@@ -94,6 +94,90 @@
       to   { transform: scale(1); opacity: 1; }
     }
 
+    /* ── Fav Button ── */
+    .fav-top-btn {
+      background: #fff0f0;
+      color: #e11d48;
+      border: 1.5px solid #fda4af;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .fav-top-btn:hover { background: #e11d48; color: white; border-color: #e11d48; }
+
+    /* ── Heart on card ── */
+    .recipe-card__fav {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .recipe-card__fav:active { transform: scale(1.3); }
+
+    /* ── Heart on modal ── */
+    .modal-fav-btn {
+      background: #fff0f0;
+      color: #e11d48;
+      border: 1.5px solid #fda4af;
+      border-radius: 16px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .modal-fav-btn.active { background: #e11d48; color: white; border-color: #e11d48; }
+
+    /* ── Fav Modal ── */
+    .fav-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .fav-modal__title { font-size: 18px; font-weight: 800; color: var(--text); }
+    .fav-modal__count { font-size: 13px; color: var(--text-sub); }
+    .fav-list { display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; }
+    .fav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .fav-item:hover { background: var(--green-light); }
+    .fav-item__emoji { font-size: 28px; flex-shrink: 0; }
+    .fav-item__info { flex: 1; min-width: 0; }
+    .fav-item__name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .fav-item__meta { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+    .fav-item__del {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      color: #9ca3af;
+      transition: color 0.15s;
+    }
+    .fav-item__del:hover { color: #e11d48; }
+    .fav-empty { text-align: center; padding: 40px 0; color: var(--text-sub); font-size: 14px; }
+    .fav-empty__icon { font-size: 40px; margin-bottom: 12px; }
+
     /* ── Top Bar ── */
     .topbar {
       display: flex;
@@ -866,7 +950,10 @@
       <span class="topbar__icon">🍽️</span>
       <span class="topbar__title">레시피 <span>추천</span></span>
     </div>
-    <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고<span class="fridge-badge hidden" id="fridge-badge"></span></button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="fav-top-btn" id="fav-view-btn">♥ 즐겨찾기</button>
+      <button class="fridge-top-btn" id="fridge-view-btn">🧊 냉장고<span class="fridge-badge hidden" id="fridge-badge"></span></button>
+    </div>
   </div>
 
   <!-- Steps -->
@@ -1026,7 +1113,21 @@
       <div class="modal__tip-icon">💡</div>
       <div class="modal__tip-text" id="modal-tip-text"></div>
     </div>
+    <button class="modal-fav-btn" id="modal-fav-btn" onclick="toggleFavFromModal()">♡ 즐겨찾기 추가</button>
     <button class="modal__close" id="modal-close">닫기</button>
+  </div>
+</div>
+
+<!-- ── Fav Modal ── -->
+<div class="modal-overlay" id="fav-overlay">
+  <div class="modal">
+    <div class="modal__handle"></div>
+    <div class="fav-modal__header">
+      <span class="fav-modal__title">♥ 즐겨찾기</span>
+      <span class="fav-modal__count" id="fav-count"></span>
+    </div>
+    <div class="fav-list" id="fav-list"></div>
+    <button class="modal__close" style="margin-top:16px" id="fav-modal-close">닫기</button>
   </div>
 </div>
 
@@ -1821,6 +1922,7 @@ function findRecipes() {
               <span class="meta-tag">${r.category}</span>
             </div>
           </div>
+          <button class="recipe-card__fav" onclick="event.stopPropagation();toggleFav(${r.id},this)" title="즐겨찾기">${isFav(r.id) ? '♥' : '♡'}</button>
         </div>
         <div class="recipe-card__match">
           <div class="match-bar"><div class="match-bar__fill" style="width:${r.pct}%"></div></div>
@@ -1845,6 +1947,7 @@ const modalOverlay = document.getElementById('modal-overlay');
 window.openModal = function(id) {
   const recipe = RECIPES.find(r => r.id === id);
   if (!recipe) return;
+  _currentModalId = id;
   const myIngredients = new Set(detectedIngredients);
 
   document.getElementById('modal-emoji').textContent = recipe.emoji;
@@ -1874,6 +1977,7 @@ window.openModal = function(id) {
     tipEl.style.display = 'none';
   }
 
+  updateModalFavBtn(id);
   modalOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 };
@@ -1885,6 +1989,109 @@ function closeModal() {
   modalOverlay.classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// ═══════════════════════════════════════════════
+// 9-0. 즐겨찾기
+// ═══════════════════════════════════════════════
+let _currentModalId = null; // 현재 열린 모달의 레시피 ID
+
+function loadFavs() {
+  try { return JSON.parse(localStorage.getItem('favs') || '[]'); } catch { return []; }
+}
+function saveFavs(ids) {
+  localStorage.setItem('favs', JSON.stringify(ids));
+}
+function isFav(id) {
+  return loadFavs().includes(id);
+}
+function toggleFav(id, btn) {
+  const favs = loadFavs();
+  const idx = favs.indexOf(id);
+  if (idx === -1) {
+    favs.push(id);
+    if (btn) { btn.textContent = '♥'; btn.style.color = '#e11d48'; }
+  } else {
+    favs.splice(idx, 1);
+    if (btn) { btn.textContent = '♡'; btn.style.color = ''; }
+  }
+  saveFavs(favs);
+}
+
+// 모달 내 즐겨찾기 버튼
+function toggleFavFromModal() {
+  if (_currentModalId === null) return;
+  toggleFav(_currentModalId, null);
+  updateModalFavBtn(_currentModalId);
+  // 레시피 카드의 하트도 동기화
+  syncCardFavBtns();
+}
+function updateModalFavBtn(id) {
+  const btn = document.getElementById('modal-fav-btn');
+  if (!btn) return;
+  if (isFav(id)) {
+    btn.textContent = '♥ 즐겨찾기 저장됨';
+    btn.classList.add('active');
+  } else {
+    btn.textContent = '♡ 즐겨찾기 추가';
+    btn.classList.remove('active');
+  }
+}
+function syncCardFavBtns() {
+  document.querySelectorAll('.recipe-card__fav').forEach(btn => {
+    const id = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+    btn.textContent = isFav(id) ? '♥' : '♡';
+    btn.style.color = isFav(id) ? '#e11d48' : '';
+  });
+}
+
+// 즐겨찾기 모달
+function openFavModal() {
+  const favIds = loadFavs();
+  const countEl = document.getElementById('fav-count');
+  const listEl = document.getElementById('fav-list');
+  countEl.textContent = `${favIds.length}개`;
+
+  if (favIds.length === 0) {
+    listEl.innerHTML = `
+      <div class="fav-empty">
+        <div class="fav-empty__icon">♡</div>
+        <div>아직 즐겨찾기한 레시피가 없어요.<br>레시피 카드의 ♡를 눌러 저장해 보세요!</div>
+      </div>`;
+  } else {
+    listEl.innerHTML = favIds.map(id => {
+      const r = RECIPES.find(rec => rec.id === id);
+      if (!r) return '';
+      return `
+        <div class="fav-item" onclick="closeFavModal();openModal(${r.id})">
+          <div class="fav-item__emoji">${r.emoji}</div>
+          <div class="fav-item__info">
+            <div class="fav-item__name">${r.name}</div>
+            <div class="fav-item__meta">⏱ ${r.time} · ${r.difficulty} · ${r.category}</div>
+          </div>
+          <button class="fav-item__del" onclick="event.stopPropagation();removeFav(${r.id})" title="삭제">✕</button>
+        </div>`;
+    }).join('');
+  }
+
+  document.getElementById('fav-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFavModal() {
+  document.getElementById('fav-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+window.removeFav = function(id) {
+  const favs = loadFavs().filter(f => f !== id);
+  saveFavs(favs);
+  openFavModal(); // 목록 갱신
+  syncCardFavBtns();
+};
+
+document.getElementById('fav-view-btn').addEventListener('click', openFavModal);
+document.getElementById('fav-modal-close').addEventListener('click', closeFavModal);
+document.getElementById('fav-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('fav-overlay')) closeFavModal();
+});
 
 // ═══════════════════════════════════════════════
 // 9. 유통기한 DB (냉장 기준, 단위: 일)
